@@ -1,0 +1,15 @@
+<package>
+  <description brief="vereshagintests">
+
+     vereshagintests
+
+  </description>
+  <author>Azamat</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/vereshagintests</url>
+  <depend package="kdl-vereshchagin"/>
+  <depend package="kdl_parser"/>
+</package>
+
+
