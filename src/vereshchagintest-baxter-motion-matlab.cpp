@@ -20,9 +20,9 @@
 // #define FKPOSE_TEST
 #define X_CONSTRAINT_SET
 #define Y_CONSTRAINT_SET
-//#define Z_CONSTRAINT_SET
-//#define X_CONSTRAINT_ROT_SET
-//#define Y_CONSTRAINT_ROT_SET
+#define Z_CONSTRAINT_SET
+#define X_CONSTRAINT_ROT_SET
+#define Y_CONSTRAINT_ROT_SET
 #define Z_CONSTRAINT_ROT_SET
 // #define FEXT_CONTROL_WITH_CONSTRAINT
 #define FEXT_CONTROL
@@ -69,7 +69,7 @@ int main()
     //    ;
     //    std::cout << "number of chain links " << numberOfLinks << std::endl;
 
-    unsigned int numberOfConstraints = 3;
+    unsigned int numberOfConstraints = 6;
     Twist constraintForce;
     Twists constraintForces;
     for (unsigned int i = 0; i < numberOfJoints; i++)
@@ -80,7 +80,10 @@ int main()
 
     constraintForces[0].vel[0] = 0; //Xlinear
     constraintForces[1].vel[1] = 0; //Ylinear
-    constraintForces[2].rot[2] = 0; //Zlinear
+    constraintForces[2].vel[2] = 0; //Zlinear
+    constraintForces[3].rot[0] = 0; //Xangular
+    constraintForces[4].rot[1] = 0; //Yangular
+    constraintForces[5].rot[2] = 0; //Zangular
 
 #ifdef X_CONSTRAINT_SET
     constraintForces[0].vel[0] = 1;
@@ -90,8 +93,19 @@ int main()
     constraintForces[1].vel[1] = 1;
 #endif //~Y_CONSTRAINT_SET
 
+#ifdef Z_CONSTRAINT_SET
+    constraintForces[2].vel[2] = 1;
+#endif //~Y_CONSTRAINT_SET
+
+#ifdef X_CONSTRAINT_ROT_SET
+    constraintForces[3].rot[0] = 1;
+#endif //~Z_CONSTRAINT_SET
+#ifdef Y_CONSTRAINT_ROT_SET
+    constraintForces[4].rot[1] = 1;
+#endif //~Z_CONSTRAINT_SET
+    
 #ifdef Z_CONSTRAINT_ROT_SET
-    constraintForces[2].rot[2] = 1;
+    constraintForces[5].rot[2] = 1;
 #endif //~Z_CONSTRAINT_SET
     //--------------------------------------------------------------------------------------//
     //Acceleration energy and constraint matrix at  the end-effector
