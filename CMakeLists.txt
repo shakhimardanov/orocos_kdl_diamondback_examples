@@ -32,5 +32,6 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 rosbuild_add_executable(vereshchagintest-4dof-motion src/vereshchagintest-4-dof-motion-with-posture-matlab.cpp)
 rosbuild_add_executable(vereshchagintest-youbot-motion src/vereshchagintest-youbot-motion-matlab.cpp)
 rosbuild_add_executable(vereshchagintest-lwr-motion src/vereshchagintest-lwr-motion-matlab.cpp)
+rosbuild_add_executable(vereshchagintest-baxter-motion src/vereshchagintest-baxter-motion-matlab.cpp)
 
 #target_link_libraries(example ${PROJECT_NAME})

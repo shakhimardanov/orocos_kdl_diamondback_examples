@@ -197,7 +197,7 @@ int main()
     double timeDelta = 0.001;
     double timeToSettle = 0.5;
     int status;
-    double roll(0.0),pitch(0.0),yaw(0.0);
+    double alfa(0.0), beta(0.0), gamma(0.0);
     //Controller gain configurations
     
     double ksi[3] = {1.0, 1.0, 1.0}; //damping factor
@@ -330,10 +330,10 @@ int main()
         constraintSolver.getLinkCartesianPose(cartX[0]);
         constraintSolver.getLinkCartesianVelocity(cartXDot[0]);
         constraintSolver.getLinkCartesianAcceleration(cartXDotDot[0]);
-        cartX[0][4].M.GetEulerZYX(roll,pitch,yaw);
+        cartX[0][4].M.GetEulerZYX(alfa,beta,gamma);
 
         #ifdef ACTUAL_CARTESIAN_VALUES
-            printf("%f          %f      %f     %f         %f        %f      %f\n",  t, cartX[0][4].p[0], cartX[0][4].p[1], cartX[0][4].p[2], roll, pitch, yaw);
+            printf("%f          %f      %f     %f         %f        %f      %f\n",  t, cartX[0][4].p[0], cartX[0][4].p[1], cartX[0][4].p[2], alfa, beta, gamma);
         #endif //~ACTUAL_CARTESIAN_VALUES  
 
         //Integration(robot joint values for rates and poses; actual) at the given "instanteneous" interval for joint position and velocity.

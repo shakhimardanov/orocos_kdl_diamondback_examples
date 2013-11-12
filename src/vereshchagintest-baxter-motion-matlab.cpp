@@ -13,81 +13,48 @@
 
 // #define DESIRED_CARTESIAN_VALUES
 // #define DESIRED_JOINT_VALUES
- #define ACTUAL_CARTESIAN_VALUES
+#define ACTUAL_CARTESIAN_VALUES
 //#define ACTUAL_JOINT_VALUES
 // #define CARTESIAN_ERROR_VALUES
 // #define JOINT_ERROR_VALUES
 // #define FKPOSE_TEST
-//#define X_CONSTRAINT_SET
+#define X_CONSTRAINT_SET
 #define Y_CONSTRAINT_SET
 //#define Z_CONSTRAINT_SET
+//#define X_CONSTRAINT_ROT_SET
+//#define Y_CONSTRAINT_ROT_SET
+#define Z_CONSTRAINT_ROT_SET
 // #define FEXT_CONTROL_WITH_CONSTRAINT
- #define FEXT_CONTROL
+#define FEXT_CONTROL
 #define BETA_CONTROL_WITH_CONSTRAINT
- #define JOINT_CONTROL
+// #define JOINT_CONTROL
 
 int main()
 {
 
     using namespace KDL;
 
+    KDL::Tree baxterTree;
 
-    //*******************************************************************
-    // LWR ROBOT MODEL PARAMETERS (DO NOT DISTRIBUTE OUTSIDE PMA)
-    //*******************************************************************
+    if (!kdl_parser::treeFromFile("/home/azamat/programming/ros-diamondback/youbot-ros-pkg/youbot_common/youbot_description/robots/baxtermodified.urdf", baxterTree))
+    {
+        std::cout << "Failed to construct kdl tree" << std::endl;
+        return false;
+    }
+    //        else
+    //        {
+    //            std::cout << "succeeded " << baxterTree.getNrOfJoints() << std::endl;
+    //            std::cout << "succeeded " << baxterTree.getNrOfSegments() << std::endl;
+    //        }
 
-    Chain chainLWR;
-    //joint 0
-    // chainLWR.addSegment(Segment(Joint(Joint::None),
-    //               Frame::DH_Craig1989(0.0, 0.0, 0.31, 0.0) //frame1
-    //               ));
-    //joint 1
-    chainLWR.addSegment(Segment(Joint(Joint::RotZ),
-                                Frame::DH_Craig1989(0.0, 1.5707963, 0.0, 0.0),
-                                Frame::DH_Craig1989(0.0, 1.5707963, 0.0, 0.0).Inverse() * RigidBodyInertia(2,
-                                                                                                           KDL::Vector::Zero(),
-                                                                                                           RotationalInertia(0.1, 0.1, 0.0115343, 0.0, 0.0, 0.0)))); //frame 2
-
-    //joint 2 
-    chainLWR.addSegment(Segment(Joint(Joint::RotZ),
-                                Frame::DH_Craig1989(0.0, -1.5707963, 0.4, 0.0),
-                                Frame::DH_Craig1989(0.0, -1.5707963, 0.4, 0.0).Inverse() * RigidBodyInertia(2,
-                                                                                                            KDL::Vector(0.0, -0.3120511, -0.0038871),
-                                                                                                            RotationalInertia(-0.5471572, -0.0000302, -0.5423253, 0.0, 0.0, 0.0018828)))); //frame 3
-
-    //joint 3
-    chainLWR.addSegment(Segment(Joint(Joint::RotZ),
-                                Frame::DH_Craig1989(0.0, -1.5707963, 0.0, 0.0),
-                                Frame::DH_Craig1989(0.0, -1.5707963, 0.0, 0.0).Inverse() * RigidBodyInertia(2,
-                                                                                                            KDL::Vector(0.0, -0.0015515, 0.0),
-                                                                                                            RotationalInertia(0.0063507, 0.1, 0.0107804, 0.0, 0.0, -0.0005147)))); //frame 4
-
-    //joint 4
-    chainLWR.addSegment(Segment(Joint(Joint::RotZ),
-                                Frame::DH_Craig1989(0.0, 1.5707963, 0.39, 0.0),
-                                Frame::DH_Craig1989(0.0, 1.5707963, 0.39, 0.0).Inverse() * RigidBodyInertia(2,
-                                                                                                            KDL::Vector(0.0, 0.5216809, 0.0),
-                                                                                                            RotationalInertia(-1.0436952, 0.1, -1.0392780, 0.0, 0.0, 0.0005324)))); //frame 5
-
-    //joint 5
-    chainLWR.addSegment(Segment(Joint(Joint::RotZ),
-                                Frame::DH_Craig1989(0.0, 1.5707963, 0.0, 0.0),
-                                Frame::DH_Craig1989(0.0, 1.5707963, 0.0, 0.0).Inverse() * RigidBodyInertia(2,
-                                                                                                           KDL::Vector(0.0, 0.0119891, 0.0),
-                                                                                                           RotationalInertia(0.0036654, 0.1, 0.0060429, 0.0, 0.0, 0.0004226)))); //frame 6
-
-    //joint 6
-    chainLWR.addSegment(Segment(Joint(Joint::RotZ),
-                                Frame::DH_Craig1989(0.0, -1.5707963, 0.0, 0.0),
-                                Frame::DH_Craig1989(0.0, -1.5707963, 0.0, 0.0).Inverse() * RigidBodyInertia(2,
-                                                                                                            KDL::Vector(0.0, 0.0080787, 0.0),
-                                                                                                            RotationalInertia(0.0010431, 0.1, 0.0036376, 0.0, 0.0, 0.0000101)))); //frame 7
-    //joint 7
-    chainLWR.addSegment(Segment(Joint(Joint::RotZ),
-                                Frame::Identity(),
-                                RigidBodyInertia(2,
-                                                 KDL::Vector::Zero(),
-                                                 RotationalInertia(0.000001, 0.1, 0.0001203, 0.0, 0.0, 0.0)))); //frame 8
+    KDL::Chain chainBaxter;
+    baxterTree.getChain("right_arm_mount", "right_wrist", chainBaxter);
+    //        for (int i = 0; i < chainBaxter.getNrOfJoints(); i++)
+    //        {
+    //            std::cout << chainBaxter.getSegment(i).getName() << std::endl;
+    //            std::cout << chainBaxter.getSegment(i).getJoint().getName() << std::endl;
+    //    
+    //        }
 
 
     //Definition of constraints and external disturbances
@@ -95,13 +62,14 @@ int main()
     //Constraint force matrix at the end-effector
     //What is the convention for the spatial force matrix; is it the same as in thesis?
     //NOTE AZAMAT: Constraint are also defined in local reference frame?!
-    unsigned int numberOfJoints = chainLWR.getNrOfJoints();
-    unsigned int numberOfLinks = chainLWR.getNrOfSegments();
+    unsigned int numberOfJoints = chainBaxter.getNrOfJoints();
+    unsigned int numberOfLinks = chainBaxter.getNrOfSegments();
+
     //    std::cout << "number of chain joints " << numberOfJoints << std::endl;
     //    ;
     //    std::cout << "number of chain links " << numberOfLinks << std::endl;
 
-    unsigned int numberOfConstraints = 1;
+    unsigned int numberOfConstraints = 3;
     Twist constraintForce;
     Twists constraintForces;
     for (unsigned int i = 0; i < numberOfJoints; i++)
@@ -111,19 +79,19 @@ int main()
     }
 
     constraintForces[0].vel[0] = 0; //Xlinear
-//    constraintForces[1].vel[1] = 0; //Ylinear
-//    constraintForces[2].vel[2] = 0; //Zlinear
+    constraintForces[1].vel[1] = 0; //Ylinear
+    constraintForces[2].rot[2] = 0; //Zlinear
 
 #ifdef X_CONSTRAINT_SET
     constraintForces[0].vel[0] = 1;
 #endif //~X_CONSTRAINT_SET
 
 #ifdef Y_CONSTRAINT_SET
-    constraintForces[0].vel[1] = 1;
+    constraintForces[1].vel[1] = 1;
 #endif //~Y_CONSTRAINT_SET
 
-#ifdef Z_CONSTRAINT_SET
-    constraintForces[2].vel[2] = 1;
+#ifdef Z_CONSTRAINT_ROT_SET
+    constraintForces[2].rot[2] = 1;
 #endif //~Z_CONSTRAINT_SET
     //--------------------------------------------------------------------------------------//
     //Acceleration energy and constraint matrix at  the end-effector
@@ -133,11 +101,11 @@ int main()
     for (unsigned int i = 0; i < numberOfConstraints; i++)
     {
         alpha.setColumn(i, constraintForces[i]);
+        //        std::cout << alpha.getColumn(i) << std::endl;
         betha(i) = 0.0;
         bethaControl(i) = 0.0;
 
     }
-
     //arm root acceleration
     Vector linearAcc(0.0, 0.0, 9.8); //gravitational acceleration along Z
     Vector angularAcc(0.0, 0.0, 0.0);
@@ -155,7 +123,7 @@ int main()
 
     //Definition of solver and initial configuration
 
-    ChainIdSolver_Vereshchagin constraintSolver(chainLWR, twist0, numberOfConstraints);
+    ChainIdSolver_Vereshchagin constraintSolver(chainBaxter, twist0, numberOfConstraints);
 
     //These arrays of joint values contain actual and desired values
     //actual is generated by a solver and integrator
@@ -206,8 +174,8 @@ int main()
     jointInitialPose(3) = M_PI / 4.0;
     jointInitialPose(4) = 0.0;
     jointInitialPose(5) = M_PI / 4.0;
-    jointInitialPose(6) = 0.0;
-    // -0.465823,    0.137886,    0.544715
+    jointInitialPose(6) = -M_PI / 8.0;
+    //0.0931692,    0.228355,   -0.455051
 
     JntArray jointFinalPose(numberOfJoints);
     jointFinalPose(0) = M_PI / 6.0;
@@ -217,7 +185,8 @@ int main()
     jointFinalPose(4) = 0.0;
     jointFinalPose(5) = M_PI / 12.0;
     jointFinalPose(6) = -M_PI / 24.0;
-    // corresponds to -0.456123,   -0.251875,    0.591559
+    // 0.510483,    0.301352,   -0.432926
+
     for (unsigned int i = 0; i < numberOfJoints; i++)
     {
         //actual initial
@@ -226,14 +195,19 @@ int main()
         jointPoses[1](i) = jointInitialPose(i);
     }
 
+    double alfa_z(0.0), beta_y(0.0), gamma_x(0.0);
     //test
 #ifdef FKPOSE_TEST
-    ChainFkSolverPos_recursive fksolver(chainLWR);
+    ChainFkSolverPos_recursive fksolver(chainBaxter);
     Frame tempEE;
     fksolver.JntToCart(jointPoses[0], tempEE, 7);
+    tempEE.M.GetEulerZYX(alfa_z, beta_y, gamma_x);
     std::cout << tempEE << std::endl << std::endl;
+    std::cout << "alfa_z " << alfa_z << " beta_y " << beta_y << " gamma_x " << gamma_x << std::endl << std::endl;
     fksolver.JntToCart(jointFinalPose, tempEE, 7);
-    std::cout << tempEE << std::endl;
+    tempEE.M.GetEulerZYX(alfa_z, beta_y, gamma_x);
+    std::cout << tempEE << std::endl << std::endl;
+    std::cout << "alfa_z " << alfa_z << " beta_y " << beta_y << " gamma_x " << gamma_x << std::endl << std::endl;
 #endif//~FKPOSE_TEST
 
     //~Definition of solver and initial configuration
@@ -251,22 +225,22 @@ int main()
     //for cartesian space
     double ksi[2] = {1.0, 1.0}; //damping factor
     double Kp[3], Kp_b[3];
-    Kp_b[0] = 1.0 / (timeToSettle * timeToSettle);
-    Kp_b[1] = 150.0 / (timeToSettle * timeToSettle);
-    Kp_b[2] = 1.0 / (timeToSettle * timeToSettle);
+    Kp_b[0] = 100.0 / (timeToSettle * timeToSettle);
+    Kp_b[1] = 100.0 / (timeToSettle * timeToSettle);
+    Kp_b[2] = 90.0 / (timeToSettle * timeToSettle);
 
     Kp[0] = 170.15345 / (timeToSettle * timeToSettle); // 1.345 for x const only  with timeToSettle= 0.015 and q1 is controlled
-    Kp[1] = 100.232 / (timeToSettle * timeToSettle);
-    Kp[2] = 380.232 / (timeToSettle * timeToSettle);
+    Kp[1] = 170.232 / (timeToSettle * timeToSettle);
+    Kp[2] = 180.232 / (timeToSettle * timeToSettle);
 
     double Kv[3], Kv_b[3];
-    Kv_b[0] = 1.0 * ksi[1] / timeToSettle;
-    Kv_b[1] = 45.0 * ksi[1] / timeToSettle;
-    Kv_b[2] = 1.0 * ksi[1] / timeToSettle;
+    Kv_b[0] = 30.0 * ksi[1] / timeToSettle;
+    Kv_b[1] = 30.0 * ksi[1] / timeToSettle;
+    Kv_b[2] = 50.0 * ksi[1] / timeToSettle;
 
-    Kv[0] = 30.5205978 * ksi[0] / timeToSettle; // 2.5978 for x const only with timeToSettle= 0.015 and q1 is controlled
-    Kv[1] = 4.55989 * ksi[1] / timeToSettle; // added control around Y using fext improves stability of constraint by Y never follows desired path
-    Kv[2] = 50.55989 * ksi[1] / timeToSettle;
+    Kv[0] = 40.5205978 * ksi[0] / timeToSettle; // 2.5978 for x const only with timeToSettle= 0.015 and q1 is controlled
+    Kv[1] = 40.55989 * ksi[1] / timeToSettle; // added control around Y using fext improves stability of constraint by Y never follows desired path
+    Kv[2] = 70.55989 * ksi[1] / timeToSettle;
     double Ki[2] = {0.0, 0.0};
     double K = 0.01;
 
@@ -277,7 +251,7 @@ int main()
     Kpq[1] = 100.2 / (timeToSettle * timeToSettle);
     Kpq[2] = 75.1 / (timeToSettle * timeToSettle);
     Kpq[3] = 60.1 / (timeToSettle * timeToSettle);
-    Kpq[4] = 10.1 / (timeToSettle * timeToSettle);
+    Kpq[4] = 60.1 / (timeToSettle * timeToSettle);
     Kpq[5] = 10.1 / (timeToSettle * timeToSettle);
     Kpq[6] = 10.1 / (timeToSettle * timeToSettle);
     double Kvq[numberOfJoints];
@@ -286,28 +260,30 @@ int main()
     Kvq[2] = 3.0 * ksi[1] / timeToSettle;
     Kvq[3] = 3.0 * ksi[1] / timeToSettle;
     Kvq[4] = 3.0 * ksi[1] / timeToSettle;
-    Kvq[5] = 3.0 * ksi[1] / timeToSettle;
+    Kvq[5] = 2.0 * ksi[1] / timeToSettle;
     Kvq[6] = 0.03 * ksi[1] / timeToSettle;
 
     //Interpolator parameters:
-    // initial -0.465823,    0.137886,    0.544715
-    // final  -0.456123,   -0.251875,    0.591559
+    // initial 0.0931692,    0.228355,   -0.455051; orientation ZYX alfa = -2.65578, beta = -0.781623, gamma = 2.22695
+    // final   0.510483,    0.301352,   -0.432926; orientation  ZYX  alfa = -2.67293, beta = 0.395176, gamma = 3.0456
     //cartesian space
-    double b0_x = -0.465823; //should come from initial joint configuration
+    double b0_x = 0.0931692; //should come from initial joint configuration
     double b1_x = 0.0;
-    double b2_x = ((-0.456123 - b0_x)*3.0 / (simulationTime * simulationTime));
-    double b3_x = -((-0.456123 - b0_x)*2.0 / (simulationTime * simulationTime * simulationTime));
+    double b2_x = ((0.0931692 - b0_x)*3.0 / (simulationTime * simulationTime));
+    double b3_x = -((0.0931692 - b0_x)*2.0 / (simulationTime * simulationTime * simulationTime));
 
-    double b0_y = 0.137886; //should come from initial joint configuration
+    double b0_y = 0.228355; //should come from initial joint configuration
     double b1_y = 0.0;
-    double b2_y = ((0.137886 - b0_y)*3.0 / (simulationTime * simulationTime));
-    double b3_y = -((0.137886 - b0_y)*2.0 / (simulationTime * simulationTime * simulationTime));
+    double b2_y = ((0.228355 - b0_y)*3.0 / (simulationTime * simulationTime));
+    double b3_y = -((0.228355 - b0_y)*2.0 / (simulationTime * simulationTime * simulationTime));
 
-    double b0_z = 0.544715; //should come from initial joint configuration
+    double b0_z = -0.455051; //should come from initial joint configuration
     double b1_z = 0.0;
-    double b2_z = ((0.591559 - b0_z)*3.0 / (simulationTime * simulationTime));
-    double b3_z = -((0.591559 - b0_z)*2.0 / (simulationTime * simulationTime * simulationTime));
-
+    double b2_z = ((-0.432926 - b0_z)*3.0 / (simulationTime * simulationTime));
+    double b3_z = -((-0.432926 - b0_z)*2.0 / (simulationTime * simulationTime * simulationTime));
+    //set desired orientation, which is equal to the initial orientation, we are interested in alfa about Z axis
+    alfa_z = -2.65578;
+    cartX[1][numberOfLinks - 1].M.EulerZYX(alfa_z, -1.0472, 2.61799);
 
     //joint space
     double a0_q0 = jointInitialPose(0);
@@ -373,7 +349,7 @@ int main()
         cartXDotDot[1][numberOfLinks - 1].vel[2] = 2 * b2_z + 6 * b3_z*t;
 
 #ifdef DESIRED_CARTESIAN_VALUES
-        printf("%f          %f      %f     %f         %f        %f      %f\n", t, cartX[1][numberOfLinks - 1].p[0], cartX[1][numberOfLinks - 1].p[1], cartX[1][numberOfLinks - 1].p[2], cartXDot[1][numberOfLinks - 1].vel[0], cartXDot[1][numberOfLinks - 1].vel[1], cartXDot[1][numberOfLinks - 1].vel[2]);
+        printf("%f          %f      %f     %f       %f         %f        %f      %f\n", t, cartX[1][numberOfLinks - 1].p[0], cartX[1][numberOfLinks - 1].p[1], cartX[1][numberOfLinks - 1].p[2], alfa_z, cartXDot[1][numberOfLinks - 1].vel[0], cartXDot[1][numberOfLinks - 1].vel[1], cartXDot[1][numberOfLinks - 1].vel[2]);
         // printf("Desired Cartesian values: %f          %f      %f     %f         %f        %f      %f\n", t, cartX[1][numberOfLinks-1].p[0], cartX[1][numberOfLinks-1].p[1], cartX[1][numberOfLinks-1].p[2], cartXDot[1][numberOfLinks-1].vel[0], cartXDot[1][numberOfLinks-1].vel[1], cartXDot[1][numberOfLinks-1].vel[2]);
 #endif //~DESIRED_CARTESIAN_VALUES
 
@@ -412,11 +388,11 @@ int main()
         constraintSolver.getLinkCartesianPose(cartX[0]);
         constraintSolver.getLinkCartesianVelocity(cartXDot[0]);
         constraintSolver.getLinkCartesianAcceleration(cartXDotDot[0]);
-        double alfa(0.0), gamma(0.0), beta(0.0);
-        cartX[0][numberOfLinks - 1].M.GetEulerZYX(alfa, gamma, beta);
+        double alfa_actual(0.0), beta_actual(0.0), gamma_actual(0.0);
+        cartX[0][numberOfLinks - 1].M.GetEulerZYX(alfa_actual, beta_actual, gamma_actual);
 
 #ifdef ACTUAL_CARTESIAN_VALUES
-        printf("%f          %f      %f     %f         %f        %f      %f\n", t, cartX[0][numberOfLinks - 1].p[0], cartX[0][numberOfLinks - 1].p[1], cartX[0][numberOfLinks - 1].p[2], alfa, gamma, beta);
+        printf("%f          %f      %f     %f         %f        %f      %f\n", t, cartX[0][numberOfLinks - 1].p[0], cartX[0][numberOfLinks - 1].p[1], cartX[0][numberOfLinks - 1].p[2], alfa_actual, beta_actual, gamma_actual);
 #endif //~ACTUAL_CARTESIAN_VALUES
 
         //Integration(robot joint values for rates and poses; actual) at the given "instanteneous" interval for joint position and velocity.
@@ -466,9 +442,10 @@ int main()
         //Regulator or controller
         //acceleration energy control
 #ifdef BETA_CONTROL_WITH_CONSTRAINT
-//        betha(0) = alpha(0, 0)*(K * cartXDotDot[2][numberOfLinks - 1].vel[0] + (Kv_b[0]) * cartXDot[2][numberOfLinks - 1].vel[0] + (Kp_b[0]) * cartX[2][numberOfLinks - 1].p[0] + Ki[1] * cartX[3][numberOfLinks - 1].p[0]);
-        betha(0) = alpha(1, 0)*(K * cartXDotDot[2][numberOfLinks - 1].vel[1] + (Kv_b[1]) * cartXDot[2][numberOfLinks - 1].vel[1] + (Kp_b[1]) * cartX[2][numberOfLinks - 1].p[1] + Ki[1] * cartX[3][numberOfLinks - 1].p[1]);
-//        betha(2) = alpha(2, 2)*(K * cartXDotDot[2][numberOfLinks - 1].vel[2] + (Kv_b[2]) * cartXDot[2][numberOfLinks - 1].vel[2] + (Kp_b[2]) * cartX[2][numberOfLinks - 1].p[2] + Ki[1] * cartX[3][numberOfLinks - 1].p[2]);
+        betha(0) = alpha(0, 0)*(K * cartXDotDot[2][numberOfLinks - 1].vel[0] + (Kv_b[0]) * cartXDot[2][numberOfLinks - 1].vel[0] + (Kp_b[0]) * cartX[2][numberOfLinks - 1].p[0] + Ki[1] * cartX[3][numberOfLinks - 1].p[0]);
+        betha(1) = alpha(1, 1)*(K * cartXDotDot[2][numberOfLinks - 1].vel[1] + (Kv_b[1]) * cartXDot[2][numberOfLinks - 1].vel[1] + (Kp_b[1]) * cartX[2][numberOfLinks - 1].p[1] + Ki[1] * cartX[3][numberOfLinks - 1].p[1]);
+        //        betha(2) = alpha(2, 2)*(K * cartXDotDot[2][numberOfLinks - 1].vel[2] + (Kv_b[2]) * cartXDot[2][numberOfLinks - 1].vel[2] + (Kp_b[2]) * cartX[2][numberOfLinks - 1].p[2] + Ki[1] * cartX[3][numberOfLinks - 1].p[2]);
+        betha(2) = alpha(5, 2)*(Kv_b[2] * -cartXDot[0][numberOfLinks - 1].rot[2] + (Kp_b[2]) * (alfa_z - alfa_actual));
 #endif //~BETA_CONTROL_WITH_CONSTRAINT
         // priority posture control
         // jointControlTorques[0](0) = jointAccelerations[1](0) + (Kpq[0])*jointPoses[2](0) + (Kvq[0])*jointRates[2](0);
@@ -478,11 +455,11 @@ int main()
 
         //priority constraint control
 #ifdef JOINT_CONTROL
-        feedforwardJointTorque0 = jointAccelerations[1](0) + (Kpq[0]) * jointPoses[2](0) + (Kvq[0]) * jointRates[2](0);
-        feedforwardJointTorque1 = jointAccelerations[1](1) + (Kpq[1]) * jointPoses[2](1) + (Kvq[1]) * jointRates[2](1);
-        feedforwardJointTorque2 = jointAccelerations[1](2) + (Kpq[2]) * jointPoses[2](2) + (Kvq[2]) * jointRates[2](2);
-        feedforwardJointTorque3 = jointAccelerations[1](3) + (Kpq[3]) * jointPoses[2](3) + (Kvq[3]) * jointRates[2](3);
-        feedforwardJointTorque4 = jointAccelerations[1](4) + (Kpq[4]) * jointPoses[2](4) + (Kvq[4]) * jointRates[2](4);
+        //        feedforwardJointTorque0 = jointAccelerations[1](0) + (Kpq[0]) * jointPoses[2](0) + (Kvq[0]) * jointRates[2](0);
+        //        feedforwardJointTorque1 = jointAccelerations[1](1) + (Kpq[1]) * jointPoses[2](1) + (Kvq[1]) * jointRates[2](1);
+        //        feedforwardJointTorque2 = jointAccelerations[1](2) + (Kpq[2]) * jointPoses[2](2) + (Kvq[2]) * jointRates[2](2);
+        //        feedforwardJointTorque3 = jointAccelerations[1](3) + (Kpq[3]) * jointPoses[2](3) + (Kvq[3]) * jointRates[2](3);
+        //        feedforwardJointTorque4 = jointAccelerations[1](4) + (Kpq[4]) * jointPoses[2](4) + (Kvq[4]) * jointRates[2](4);
         feedforwardJointTorque5 = jointAccelerations[1](5) + (Kpq[5]) * jointPoses[2](5) + (Kvq[5]) * jointRates[2](5);
         feedforwardJointTorque6 = jointAccelerations[1](6) + (Kpq[6]) * jointPoses[2](6) + (Kvq[6]) * jointRates[2](6);
         jointTorques[0](0) = jointTorques[0](0) + feedforwardJointTorque0;
@@ -490,16 +467,16 @@ int main()
         jointTorques[0](2) = jointTorques[0](2) + feedforwardJointTorque2;
         jointTorques[0](3) = jointTorques[0](3) + feedforwardJointTorque3;
         jointTorques[0](4) = jointTorques[0](4) + feedforwardJointTorque4;
-//        jointTorques[0](5) = jointTorques[0](5) + feedforwardJointTorque5;
-//        jointTorques[0](6) = jointTorques[0](6) + feedforwardJointTorque6;
+        jointTorques[0](5) = jointTorques[0](5) + feedforwardJointTorque5;
+        jointTorques[0](6) = jointTorques[0](6) + feedforwardJointTorque6;
 #endif //~JOINT_CONTROL
 
         //For cartesian space control one needs to calculate from the obtained joint space value, new cartesian space poses.
         //Then based on the difference of the signal (desired-actual) we define a regulation function (controller)
         // this difference should be compensated either by joint torques.
 #ifdef FEXT_CONTROL
-        externalNetForces[numberOfLinks - 1].force[0] = ((Kv[0]) * cartXDot[2][numberOfLinks - 1].vel[0] + (Kp[0]) * cartX[2][numberOfLinks - 1].p[0]);
-//        externalNetForces[numberOfLinks - 1].force[1] = ((Kv[1]) * cartXDot[2][numberOfLinks - 1].vel[1] + (Kp[1]) * cartX[2][numberOfLinks - 1].p[1]);
+        //        externalNetForces[numberOfLinks - 1].force[0] = ((Kv[0]) * cartXDot[2][numberOfLinks - 1].vel[0] + (Kp[0]) * cartX[2][numberOfLinks - 1].p[0]);
+        //        externalNetForces[numberOfLinks - 1].force[1] = ((Kv[1]) * cartXDot[2][numberOfLinks - 1].vel[1] + (Kp[1]) * cartX[2][numberOfLinks - 1].p[1]);
         externalNetForces[numberOfLinks - 1].force[2] = ((Kv[2]) * cartXDot[2][numberOfLinks - 1].vel[2] + (Kp[2]) * cartX[2][numberOfLinks - 1].p[2]);
 #endif//~FEXT_CONTROL
 
